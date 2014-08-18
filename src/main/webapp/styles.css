@@ -1,0 +1,36 @@
+#input-form
+{
+position: absolute;
+left: 550px;
+top: 50px;
+}
+
+label
+{
+    width: 150px;
+    display: inline-block;
+}
+input
+{
+	width: 150px;
+    display: inline-block;
+}
+
+#country-form
+{
+	display: block;
+}
+
+#control-buttons
+{
+	position: absolute;
+left: 50px;
+top: 100px;
+}
+
+.jstree-class
+{
+		position: absolute;
+left: 50px;
+top: 150px;
+}

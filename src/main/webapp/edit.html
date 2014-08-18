@@ -1,0 +1,221 @@
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="styles.css" />
+<link rel="stylesheet" href="dist/themes/default/style.min.css" />
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="dist/jstree.js"></script>
+<script src="getData.js"></script>
+</head>
+
+
+<h2>Hello World!</h2>
+
+<body>
+
+<select id="mainMenu">
+  <option value="GeoObjectTypes">Geo Object Types</option>
+  <option value="GeoUnits">Geographical Units</option>
+</select>
+
+    
+    <div id="input-form">
+	    <form id="geounit-type-form">
+	      <fieldSet>
+	      <label>Id</label> <input type="text" name="id"><br>
+	      <label>Name</label> <input type="text" name="name"><br>
+	      <label>Translation</label> <input type="text" name="translation"><br>
+	      <label>Transliteration</label> <input type="text" name="transliteration"><br>
+	      <label>Language</label> <input type="text" name="language"><br>
+	      <label>Description</label>  <textarea rows="4" cols="50"> </textarea>
+	      <input type="submit" value="Go">
+	      </fieldSet>
+	      <fieldSet id="aliasFieldSet">
+	      <label>Aliases</label>
+	         <p><a id="add" href="#">Add</a>
+	         <div id="subFieldSet"></div>
+	      </fieldSet>
+	    </form>
+    </div>
+
+
+	<div id="control-buttons">
+       <div class="col-md-4 col-sm-8 col-xs-8">
+	      <button type="button" class="btn btn-success btn-sm" onclick="node_create()"><i class="glyphicon glyphicon-asterisk"></i> Create</button>
+		  <button type="button" class="btn btn-warning btn-sm" onclick="node_rename()"><i class="glyphicon glyphicon-pencil"></i> Rename</button>
+		  <button type="button" class="btn btn-danger btn-sm" onclick="node_delete()"><i class="glyphicon glyphicon-remove"></i> Delete</button>
+		</div>
+	</div>
+	
+	<div class="jstree-class" id="geounit-type-tree"></div>
+	<div class="jstree-class" id="country-tree" style="display: none""></div>
+
+
+
+	<script>
+	$('#mainMenu').change(function() {
+	  var val = $('#mainMenu').val();
+	  if (val == 'GeoObjectTypes') {
+	    $('#country-tree').hide();
+	    $("#country-form").hide();
+	    $('#geounit-type-tree').show();
+
+	  } else if (val == 'GeoUnits') {
+	    $('#country-tree').show();
+	    $('#geounit-type-tree').hide();
+	    $('#geounit-type-form').hide();
+	  }
+	});
+	
+	
+	
+
+  
+  
+	
+	
+	//Evaluate the following--
+  var data = [
+	{
+  	  id          : "Ottoman_Country", // required
+	  text        : "Ottoman Empire", // node text
+	  icon        : "string", // string for custom
+	  children    :  [{
+		  id          : "Istanbul_City", // required
+	      text        : "Istanbul", // node text
+	      icon        : "string" // string for custom
+	    },
+	  	{
+	  	  id          : "Ankara_City", // required
+	      text        : "Ankara", // node text
+	      icon        : "string" // string for custom
+	    }]
+	}];
+	
+  window.dataMap = new Object(); // or var map = {};
+  
+  function populateMap(o) {
+    dataMap[o.id] = o;
+    if (!o.children) {
+      return;
+    }
+    for (var i = 0; i < o.children.length; i++) {
+      c = o.children[i];
+      dataMap[c.id] = c;
+      populateMap(c);
+    }
+  }
+  
+  populateMap(data[0]);
+
+  function getNode(k) {
+      window.dataMap[k];
+  }
+  
+  
+  $("#country-form").submit(function( event ) {
+    name = $("#country-form input[name=name]").val();
+    type = $("#country-form input[name=type]").val();
+    
+    ref = $('#jstree').jstree(true);
+    sel = ref.get_selected();
+	if(!sel.length) { 
+	  return false; 
+	}
+	sel = sel[0];  //id of node
+	
+    event.preventDefault();
+  });
+  
+  function node_create() {
+      switch($('#mainMenu').val()) {
+	      case "GeoUnits" :
+	        $("#country-form").show();
+	    
+			ref = $('#country-tree').jstree(true);
+		    sel = ref.get_selected();
+			if(!sel.length) { 
+			  return false; 
+			}
+			sel = sel[0];  //id of node
+			var node = getNode(sel);
+			sel = ref.create_node(sel, {"icon":node.icon});
+			if(sel) {
+				ref.edit(sel);
+			}
+			break;
+	      case "GeoObjectTypes" :
+	        $("#geounit-type-form").show();
+	        $("#geounit-type-form").css("display", "block");
+	        fillSelectedForm();
+	  		
+      }
+	}
+	function node_rename() {
+		var ref = $('#country-tree').jstree(true),
+			sel = ref.get_selected();
+		if(!sel.length) { return false; }
+		sel = sel[0];
+		ref.edit(sel);
+	}
+	
+	function node_delete() {
+		var ref = $('#country-tree').jstree(true),
+			sel = ref.get_selected();
+		if(!sel.length) { return false; }
+		ref.delete_node(sel);
+	}
+	
+
+  
+  
+  $(function () {
+    // create an instance when the DOM is ready
+    $('#country-tree').jstree({
+        "core" : {
+          "multiple" : false,
+          "data" : data
+        }
+    });
+    
+    // 7 bind to events triggered on the tree
+    $('#country-tree').on("changed.jstree", function (e, data) {
+      console.log(data.selected);
+    });
+    
+    // 8 interact with the tree - either way is OK
+    $('button').on('click', function () {
+      $('#country-tree').jstree(true).select_node('child_node_1');
+      $('#country-tree').jstree('select_node', 'child_node_1');
+      $.jstree.reference('#country-tree').select_node('child_node_1');
+    });
+    
+    $('#geounit-type-form').hide();    
+    var geoUnitTypeData = getGeoUnitTypeData();
+
+    $('#geounit-type-tree').jstree({
+ 	   "core" : {
+ 	       "multiple" : false,
+ 	       "data" : geoUnitTypeData
+ 	    }
+ 	  });
+   $('#geounit-type-tree').on('changed.jstree', function (e, data) {
+       $("#geounit-type-form").show();
+       clearGeoUnitTypeForm();
+       fillSelectedForm(geoUnitTypeData);
+     }); 
+   
+   console.log(JSON.stringify(geoUnitTypeData));
+    
+
+  });
+  
+  
+
+
+  </script>
+
+
+</body>
+</html>

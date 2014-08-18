@@ -1,0 +1,57 @@
+(Admin Divisions)
+Select Menu:  Administrative, Ecclesiastical, Factional (during civil war).
+GeoUnit 
+  --> GeoDivisionType
+     --> GeoUnit
+     --> GeoUnit
+       --> GeoDivisionType
+          -->GeoUnit
+
+(Ruler View)        
+GeoUnit
+  --> Position
+    --> Person
+  --> Position2
+    --> Person2 (representation: location)
+    --> Person3 (representation: location)
+
+(Person View)
+Dynasty:
+  --> Person1
+  --> Person2
+
+  
+
+
+(Campaign View) 
+War
+->Campaign
+--> Order of Battle (Date, affiliation:GeoUnit)
+  --> Unit1 (either particular unit)
+    --> 
+    --> Strength
+
+(Hidden)
+Unit Tree--> Actual Hierarchies (as designated, different than actual combat armies)
+
+
+(Map View)
+Army Group (ad-hoc army)
+  --> Composition (Unit)-- shows each unit's lineage based on OOB.
+
+    
+(Active Units View)
+Unit
+    --> Commander (GeoPerson, Date)
+    --> Personnel (List<GeoPerson>, Date)
+    --> StrengthHistory (Date, Strength)
+    --> Location (Position, Date) -- determines if visible.. ie, if unit is defeated, reforming, divided, then this is not avail, hence not displayed
+
+
+
+(d3.js to display country relations?)
+Wars/Treaties
+  -->Alliance1
+    -->Country
+  -->Alliance2
+    -->Country

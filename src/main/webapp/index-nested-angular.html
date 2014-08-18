@@ -1,0 +1,49 @@
+<html>
+<head>
+<meta charset="utf-8"> 
+<link rel="stylesheet" type="text/css" href="styles.css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+<script src="controller.js"></script>   
+
+</head>
+
+<!--  no idea why if this moved to controller.js, the UTF8 no longer works. -->
+
+<h2>Hello World!</h2>
+
+<body ng-app="myApp">
+  <script type="text/ng-template"  id="tree_item_renderer.html">
+    {{data.name}}
+    <button ng-click="add(data)">Add node</button>
+    <button ng-click="delete(data)" ng-show="data.nodes.length > 0">Delete nodes</button>
+    <ul>
+        <li ng-repeat="data in data.nodes" ng-include="'tree_item_renderer.html'"></li>
+    </ul>
+</script>
+
+<ul ng-app="Application" ng-controller="TreeController">
+    <li ng-repeat="data in tree" ng-include="'tree_item_renderer.html'"></li>
+</ul>
+
+  
+
+
+<script type='text/javascript'>
+var app = angular.module("myApp", []);
+app.controller("TreeController", ['$scope', function($scope) {
+    $scope.delete = function(data) {
+        data.nodes = [];
+    };
+    $scope.add = function(data) {
+        var post = data.nodes.length + 1;
+        var newName = data.name + '-' + post;
+        data.nodes.push({name: newName,nodes: []});
+    };
+    $scope.tree = [{name: "Node", nodes: []}];
+}]);
+</script>
+
+
+</body>
+</html>
